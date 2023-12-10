@@ -1,3 +1,6 @@
+-- | This module features a basic s-expr parser
+--
+
 import Lean.Data.Parsec
 
 namespace Parser

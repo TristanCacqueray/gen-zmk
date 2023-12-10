@@ -1,3 +1,6 @@
+-- | This module defines the core data type and how to parse them from Sexpr
+--
+
 import «GenZmk».Parser
 open Parser
 

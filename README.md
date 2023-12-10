@@ -2,9 +2,9 @@
 
 ## Overview and scope
 
-The goal of project is to convert such user defined configuration:
+The goal of this project is to convert such user defined configurations:
 
-```lisp
+```
 (def-cfg
   ;; os sets the unicode sequence code
   :os 'linux
@@ -15,33 +15,15 @@ The goal of project is to convert such user defined configuration:
 (def-alias shft_bspc (mt_repeat shift bspc))
 
 (def-combos 18 (base num)
-    - (LT2 LM2)
-    _ (LT1 LM1)
-    & (LM1 LB1)
-    # (LM2 LB2)
+    - (LT2 LM2) _ (LT1 LM1) & (LM1 LB1) # (LM2 LB2)
     $ (LM0 LB0)
-    ` (RM1 RB1)
-    \ (RM2 RB2)
-    ' (RT2 RM2)
-   '" (RT1 RM1)
+    ` (RM1 RB1) \ (RM2 RB2) ' (RT2 RM2) '" (RT1 RM1)
 )
 
 (def-combos 30 (base num)
-    = (RM0 RM1)
-    | (RM3 RM4)
-    ! (LT3 LM3)
-    @ (LT3 LT2)
-    [ (LM4 LM3)
-   '( (LM3 LM2)
-   ') (LM2 LM1)
-    ] (LM1 LM0)
-    { (LT2 LT1)
-    } (LT1 LT0)
-    ~ (RT1 RT2)
-    % (RT2 RT3)
-    * (RM1 RM2)
-    + (RM2 RM3)
-    ^ (RT3 RM3)
+    = (RM0 RM1) | (RM3 RM4) ! (LT3 LM3) @ (LT3 LT2) '( (LM3 LM2) ') (LM2 LM1)
+    [ (LM4 LM3) ] (LM1 LM0) { (LT2 LT1) } (LT1 LT0) ~ (RT1 RT2) % (RT2 RT3)
+    * (RM1 RM2) + (RM2 RM3) ^ (RT3 RM3)
     )
 
 (def-layer base
@@ -78,7 +60,7 @@ The goal of project is to convert such user defined configuration:
     __ __ shift __ (to base) __)
 
 (def-layer wm
-  __ __ __           (shift up)   __            __  __          (gui J) (gui K) (gui L) (kbd "C-c p p") __
+  __ __ __           (shift up)   __            __  __               (gui J) (gui K) (gui L) (kbd "C-c p p") __
   (gui tab) __ (shift left) (shift down) (shift right) __  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
   __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-x 0") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") __ __
   _ _ _ (kbd "C-SPC") (to base) __

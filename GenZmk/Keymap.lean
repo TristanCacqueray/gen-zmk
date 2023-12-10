@@ -1,3 +1,6 @@
+-- | This module transforms the Config into ZMK keymap
+--
+
 import «GenZmk».Config
 import «GenZmk».Parser
 

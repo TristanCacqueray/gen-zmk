@@ -1,3 +1,6 @@
+-- | This module transforms the Config into SVG
+--
+
 import «GenZmk».Config
 import Std.Data.List.Basic
 
