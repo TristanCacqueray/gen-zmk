@@ -67,7 +67,7 @@ def ZMK.decodeKBD : String -> (String ⊕ String)
     | ['M', '-', x] => Sum.inl s!"LA({x.toUpper.toString})"
     | ['C', '-', x] => Sum.inl s!"LC({x.toUpper.toString})"
     | ['C', '-', 'x', ' ', c] => Sum.inr s!"&kp LC(X) &kp {ZMK.decodeChar c}"
-    | ['C', '-', 'c', ' ', 'p', ' ', c] => Sum.inr s!"&kp LC(X) &kp P &kp {ZMK.decodeChar c}"
+    | ['C', '-', 'c', ' ', 'p', ' ', c] => Sum.inr s!"&kp LC(C) &kp P &kp {ZMK.decodeChar c}"
     | xs => Sum.inr (" ".intercalate ((xs.map ZMK.decodeChar).map ("&kp " ++ .)))
 
 

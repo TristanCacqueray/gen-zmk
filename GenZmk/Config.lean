@@ -329,8 +329,8 @@ def Config.demo := Config.decode =<< Sexpr.parse "
 
 def Config.readme : IO Config := do
   let lines <- IO.FS.lines "./README.md"
-  let body := (lines.toList.dropWhile (. != "```lisp")).takeWhile (. != "```")
-  match Config.decode =<< Parser.Sexpr.parse ("\n".intercalate (body.drop 1)) with
+  let body := ((lines.toList.dropWhile (. != "```")).drop 1).takeWhile (. != "```")
+  match Config.decode =<< Parser.Sexpr.parse ("\n".intercalate body) with
    | .ok conf => pure conf
    | .error err => do
      IO.println s!"error: {err}"
