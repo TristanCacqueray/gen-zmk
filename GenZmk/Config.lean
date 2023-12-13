@@ -13,6 +13,20 @@ inductive Binding where
   | na
 deriving Repr, BEq
 
+def Binding.show : Binding -> String
+  | Binding.unicode (Sum.inl c) => c.toString
+  | Binding.unicode (Sum.inr c) => c.fst.toString
+  | Binding.key v => v
+  | Binding.mac "kbd" arg => arg
+  | Binding.mac name arg => s!"({name} {arg})"
+  | Binding.hold'tap _ _hold tap => tap.show
+  | Binding.na => ""
+
+structure Label where
+  binding : Binding
+  name    : String
+deriving Repr
+
 inductive Overlay where
   | TopRight
   | TopLeft
@@ -102,15 +116,19 @@ structure Config where
   aliases  : List Alias
   holdTaps : List HoldTap
   combos   : List LayerCombos
+  labels   : List Label
 deriving Repr
 
-def Config.default : Config := Config.mk (SystemConfig.mk Os.Linux Board.Corne) Theme.default [] [] [] []
+def Config.default : Config := Config.mk (SystemConfig.mk Os.Linux Board.Corne) Theme.default [] [] [] [] []
 
 def Config.layerPos (config : Config) : String -> Option Nat
   | layer => config.layers.reverse.toArray.findIdx? (fun x => x.name == layer)
 
 def Config.layerPos! (config : Config) : String -> Nat
   | layer => (config.layerPos layer).getD 42
+
+def Config.getLabel (config : Config) (binding : Binding): Option String :=
+  Label.name <$> config.labels.find? (fun label => label.binding == binding)
 
 -- helpers
 abbrev Result (α : Type) := ReaderT Config (Except String) α
@@ -219,6 +237,12 @@ def Flavor.parse : Parser Flavor
   | Sexpr.atom "hold-preferred" => pure Balanced
   | other => fail "board" other
 
+def Label.parse : Parser Label
+  | Sexpr.list [Sexpr.atom "def-label", bexpr, Sexpr.atom name] => do
+      let binding <- Binding.parse bexpr
+      pure $ Label.mk binding name
+  | other => fail "label" other
+
 def SystemConfig.parse : Parser SystemConfig
   | Sexpr.list (Sexpr.atom "def-cfg" :: rest) => go rest
   | other => fail "def-cfg" other
@@ -305,6 +329,9 @@ def Config.parse : List Sexpr -> Result Config
    | expr@(Sexpr.list (Sexpr.atom "def-layer" :: _)) => do
       let layer <- Layer.parse expr
       pure (fun c => {c with layers := layer :: c.layers})
+   | expr@(Sexpr.list (Sexpr.atom "def-label" :: _)) => do
+      let label <- Label.parse expr
+      pure (fun c => {c with labels := label :: c.labels})
    | expr@(Sexpr.list (Sexpr.atom "def-combos" :: _)) => do
       let combo <- LayerCombos.parse expr
       pure (fun c => {c with combos := combo :: c.combos})

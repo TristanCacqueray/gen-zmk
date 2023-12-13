@@ -59,6 +59,25 @@ The goal of this project is to convert such user defined configurations:
   _ ζΖ ξΞ __ ωΩ βΒ νΝ μΜ N  ℝ  ⊕  _
     __ __ shift __ (to base) __)
 
+(def-label (kbd "C-c p p") "📂 project")
+(def-label (kbd "C-c p f") "📂 proj-file")
+(def-label (gui ret) "🚀 terminal")
+(def-label (gui F) "💻 code")
+(def-label (gui G) "💻 comm")
+(def-label (gui H) "💻 web")
+(def-label (gui A) "💻 1")
+(def-label (gui S) "💻 2")
+(def-label (gui D) "💻 3")
+(def-label (gui J) "💻 7")
+(def-label (gui K) "💻 8")
+(def-label (gui L) "💻 9")
+(def-label (gui tab) "⇄ win")
+(def-label (kbd "C-x b") "⇄ buffer")
+(def-label (kbd "C-x 0") "⌧ win")
+(def-label (kbd "C-x 1") "⌧ other-win")
+(def-label (kbd "C-x 2") "✂ horiz")
+(def-label (kbd "C-x 3") "✂ vert")
+
 (def-layer wm
   __ __ __           (shift up)   __            __  __               (gui J) (gui K) (gui L) (kbd "C-c p p") __
   (gui tab) __ (shift left) (shift down) (shift right) __  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __

@@ -34,11 +34,14 @@ def svg (dim : (Nat × Nat)) (child : String) : String :=
   sp := ("xml:space", "preserve")
   ns := ("xmlns", "http://www.w3.org/2000/svg")
 
-def rect (fill : String) (dim : (Nat × Nat)) (pos : (Nat × Nat)) : String :=
+def rectTitle (title : Option String) (fill : String) (dim : (Nat × Nat)) (pos : (Nat × Nat)) : String :=
   mkElem "rect" [("style", style), ("width", dim.fst.repr), ("height", dim.snd.repr),
-                 ("x", pos.fst.repr), ("y", pos.snd.repr)] ""
+                 ("x", pos.fst.repr), ("y", pos.snd.repr)] (titlem.getD "")
  where
+  titlem := ("<title>" ++ . ++ "</title>") <$> title
   style := s!"fill:{fill}" ++ if fill != comboColor then ";stroke:#c3c3c3" else ""
+
+def rect := rectTitle none
 
 def text (sz : Nat) (color : Option String) (anchor : String) (pos : (Nat × Nat)) (txt : String) : String :=
   mkElem "text" [("style", style), ("dominant-baseline", "central"), ("text-anchor", anchor),
@@ -66,6 +69,9 @@ def renderLayer (config : Config) (startY : Nat) (layer : Layer) : String :=
   board := config.system.board
 
   layerColor := config.theme.layersColor.get? =<< config.layerPos layer.name
+  renderBindingLabel (pos : Nat × Nat) (binding : Binding) : Option String :=
+    let renderLabel := text 12 none "middle" (pos.fst + width / 2, pos.snd + height / 2)
+    renderLabel <$> config.getLabel binding
   renderBinding (pos : Nat × Nat) (binding : Binding) : String :=
     let renderTopRight (label: String) :=
       text 12 layerColor "end" (pos.fst + width - kpad, pos.snd + 20) label
@@ -75,8 +81,6 @@ def renderLayer (config : Config) (startY : Nat) (layer : Layer) : String :=
       | some (_, Overlay.TopRight) => renderTopRight label
       | some (_, Overlay.TopLeft) => renderTopLeft label
       | none => text 12 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + height / 2 + 3) label
-    let renderTop (label: String) :=
-      text 12 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + 20) label
     let renderUnder (label: String) :=
       text 10 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + height / 2 + 15) label
     let renderHold : Binding -> String
@@ -124,8 +128,12 @@ def renderLayer (config : Config) (startY : Nat) (layer : Layer) : String :=
     | none => s!"unknown key{pos}!"
     | some pos =>
         let coord := pos.coord startY
-        let label := "\n    ".intercalate [renderBinding coord binding]
-        "\n".intercalate [rect "none" (width, height) coord, label]
+        let (label, title) := match renderBindingLabel coord binding with
+          | some l => (l, some (binding.show))
+          | none => (renderBinding coord binding, none)
+        match layer.overlay with
+          | none => "\n".intercalate [rectTitle title "#f8f8f8" (width, height) coord, "    " ++ label]
+          | some _ => "    " ++ label
 
 def renderCombos (config : Config) (startY : Nat) (combos : List Combo) : String :=
    "\n".intercalate (combos.map renderCombo)
