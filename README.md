@@ -78,7 +78,7 @@ The goal of this project is to convert such user defined configurations:
 (def-label (kbd "C-x 1") "⌧ other-win")
 (def-label (kbd "C-x 2") "✂ horiz")
 (def-label (kbd "C-x 3") "✂ vert")
-(def-label SE "🎤 push-talk")
+(def-label SE "🎤 push")
 
 (def-layer wm
   __ __ __           (shift up)   __            __         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __

@@ -68,59 +68,66 @@ def renderLayer (config : Config) (startY : Nat) (layer : Layer) : String :=
     | none => none
   board := config.system.board
 
-  layerColor := config.theme.layersColor.get? =<< config.layerPos layer.name
-  renderBindingLabel (pos : Nat × Nat) (binding : Binding) : Option String :=
-    let renderLabel := text 12 none "middle" (pos.fst + width / 2, pos.snd + height / 2)
-    renderLabel <$> config.getLabel binding
-  renderBinding (pos : Nat × Nat) (binding : Binding) : String :=
-    let renderTopRight (label: String) :=
-      text 12 layerColor "end" (pos.fst + width - kpad, pos.snd + 20) label
-    let renderTopLeft (label: String) :=
+  renderTopRight (pos : Nat × Nat) (label: String) :=
+    text 12 layerColor "end" (pos.fst + width - kpad, pos.snd + 20) label
+  renderTopLeft (pos : Nat × Nat) (label: String) :=
       text 12 layerColor "start" (pos.fst - kpad, pos.snd + 20) label
-    let renderCenter (label: String) := match layer.overlay with
-      | some (_, Overlay.TopRight) => renderTopRight label
-      | some (_, Overlay.TopLeft) => renderTopLeft label
-      | none => text 12 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + height / 2 + 3) label
-    let renderUnder (label: String) :=
-      text 10 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + height / 2 + 15) label
+  renderCenter (pos : Nat × Nat) (label: String) := match layer.overlay with
+    | some (_, Overlay.TopRight) => renderTopRight pos label
+    | some (_, Overlay.TopLeft) => renderTopLeft pos label
+    | none => text 12 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + height / 2 + 3) label
+  renderUnder (pos : Nat × Nat) (label: String) :=
+    text 10 (labelColor label) "middle" (pos.fst + width / 2 - 2, pos.snd + height / 2 + 15) label
+
+  layerColor := config.theme.layersColor.get? =<< config.layerPos layer.name
+
+  renderBindingLabel (pos : Nat × Nat) (binding : Binding) : Option String :=
+    let renderLabel := fun label => match layer.overlay with
+      | some (_, Overlay.TopRight) => renderTopRight pos label
+      | some (_, Overlay.TopLeft) => renderTopLeft pos label
+      | none => text 12 none "middle" (pos.fst + width / 2, pos.snd + height / 2) label
+    renderLabel <$> config.getLabel binding
+
+  renderBinding (pos : Nat × Nat) (binding : Binding) : String :=
+    let render := renderCenter pos
     let renderHold : Binding -> String
-      | Binding.key c => renderUnder c.toUpper
-      | Binding.mac _name arg => renderUnder arg
+      | Binding.key c => renderUnder pos c.toUpper
+      | Binding.mac _name arg => renderUnder pos arg
       | _ => ""
     match binding with
     | Binding.unicode c => match c with
-        | Sum.inl c => renderCenter c.toString
-        | Sum.inr (c, _) => renderCenter c.toString
+        | Sum.inl c => render c.toString
+        | Sum.inr (c, _) => render c.toString
     | Binding.key c => match c with
-        | "," => renderCenter s!"{c} &lt;"
-        | "." => renderCenter s!"{c} &gt;"
-        | "/" => renderCenter s!"{c} ?"
-        | ";" => renderCenter s!"{c} :"
-        | "&" => renderCenter "&amp;"
-        | "rpar" => renderCenter ")"
-        | "lpar" => renderCenter "("
-        | _ => renderCenter (c.toUpper)
+        | "," => render s!"{c} &lt;"
+        | "." => render s!"{c} &gt;"
+        | "/" => render s!"{c} ?"
+        | ";" => render s!"{c} :"
+        | "&" => render "&amp;"
+        | "rpar" => render ")"
+        | "lpar" => render "("
+        | _ => render (c.toUpper)
     | Binding.hold'tap _ hold tap => renderBinding pos tap ++ renderHold hold
     | Binding.mac name arg => match name with
-        | "shift" => renderCenter s!"⇧ {arg.toUpper}"
-        | "alt" => renderCenter s!"M-{arg.toUpper}"
-        | "gui" => renderCenter s!"🐧 {arg.toUpper}"
-        | "to" => renderCenter s!"👉 {arg.toUpper}"
-        | "mo" => renderCenter s!"👇 {arg.toUpper}"
-        | "sl" => renderCenter s!"🤏 {arg.toUpper}"
-        | "vol" => renderCenter s!"🔉 {arg.toUpper}"
+        | "shift" => render s!"⇧ {arg.toUpper}"
+        | "alt" => render s!"M-{arg.toUpper}"
+        | "gui" => render s!"🐧 {arg.toUpper}"
+        | "to" => render s!"👉 {arg.toUpper}"
+        | "mo" => render s!"👇 {arg.toUpper}"
+        | "sl" => render s!"🤏 {arg.toUpper}"
+        | "vol" => render s!"🔉 {arg.toUpper}"
         | "pg" => match arg with
-            | "up" => renderCenter s!"⇞"
-            | _ => renderCenter s!"⇟"
+            | "up" => render s!"⇞"
+            | _ => render s!"⇟"
         | "br" => match arg with
-            | "up" => renderCenter s!"🔆"
-            | _ => renderCenter s!"🔅"
-        | "mouse" => renderCenter s!"🕹 {arg.toUpper}"
-        | "click" => renderCenter s!"🖟 {arg.toUpper}"
-        | "scroll" => renderCenter s!"scroll-{arg}"
-        | "out" => renderCenter s!"out-{arg}"
-        | "bt" => renderCenter s!"bt-{arg}"
-        | _ => renderCenter arg.toUpper
+            | "up" => render s!"🔆"
+            | _ => render s!"🔅"
+        | "mouse" => render s!"🕹 {arg.toUpper}"
+        | "click" => render s!"🖟 {arg.toUpper}"
+        | "scroll" => render s!"scroll-{arg}"
+        | "out" => render s!"out-{arg}"
+        | "bt" => render s!"bt-{arg}"
+        | _ => render arg.toUpper
     | Binding.na => ""
 
   keys := layer.bindings.mapIdx renderKey
