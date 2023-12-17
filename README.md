@@ -62,6 +62,7 @@ The goal of this project is to convert such user defined configurations:
 (def-label (kbd "C-c p p") "📂 project")
 (def-label (kbd "C-c p f") "📂 proj-file")
 (def-label (gui ret) "🚀 terminal")
+(def-label (gui v) "🚀 gmrun")
 (def-label (gui F) "💻 code")
 (def-label (gui G) "💻 comm")
 (def-label (gui H) "💻 web")
@@ -80,7 +81,7 @@ The goal of this project is to convert such user defined configurations:
 (def-label SE "🎤 push-talk")
 
 (def-layer wm
-  __ __ __           (shift up)   __            __  __               (gui J) (gui K) (gui L) (kbd "C-c p p") __
+  __ __ __           (shift up)   __            __         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
   (gui tab) __ (shift left) (shift down) (shift right) __  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
   __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-x 0") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") __ __
   _ _ _ (kbd "C-SPC") (to base) __
