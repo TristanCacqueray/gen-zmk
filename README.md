@@ -31,7 +31,7 @@ The goal of this project is to convert such user defined configurations:
   tab       (hll wm a)  (hll num s)  (hml ctrl d) (hml alt f) g
   h         (hmr alt j) (hmr ctrl k) (hlr num l)  (hhr wm ;)  (sl greek)
   esc       z x c v b   n m , . / ret
-    meta _ shft_bspc space (mo fn) _
+    meta alt shft_bspc space (mo fn) (mo num)
 )
 
 (def-layer num
@@ -77,6 +77,7 @@ The goal of this project is to convert such user defined configurations:
 (def-label (kbd "C-x 1") "⌧ other-win")
 (def-label (kbd "C-x 2") "✂ horiz")
 (def-label (kbd "C-x 3") "✂ vert")
+(def-label SE "🎤 push-talk")
 
 (def-layer wm
   __ __ __           (shift up)   __            __  __               (gui J) (gui K) (gui L) (kbd "C-c p p") __
