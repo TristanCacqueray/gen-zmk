@@ -14,13 +14,13 @@ The goal of this project is to convert such user defined configurations:
 
 (def-alias shft_bspc (mt_repeat shift bspc))
 
-(def-combos 18 (base num)
+(def-combos 18 (base num qwerty)
     - (LT2 LM2) _ (LT1 LM1) & (LM1 LB1) # (LM2 LB2)
     $ (LM0 LB0)
     ` (RM1 RB1) \ (RM2 RB2) ' (RT2 RM2) '" (RT1 RM1)
 )
 
-(def-combos 30 (base num)
+(def-combos 30 (base num qwerty)
     = (RM0 RM1) | (RM3 RM4) ! (LT3 LM3) @ (LT3 LT2) '( (LM3 LM2) ') (LM2 LM1)
     [ (LM4 LM3) ] (LM1 LM0) { (LT2 LT1) } (LT1 LT0) ~ (RT1 RT2) % (RT2 RT3)
     * (RM1 RM2) + (RM2 RM3) ^ (RT3 RM3)
@@ -88,9 +88,9 @@ The goal of this project is to convert such user defined configurations:
 )
 
 (def-layer mice
-  (to base) _ (alt left) up (alt right) _ _ (click left) (mouse up) (click right) _ _
-  (to sys) _ left down right (pg up) (scroll up) (mouse left) (mouse down) (mouse right) _ _
-  _ _ _ ctrl alt (pg dn) (scroll dn) (click middle) _ _ _ ret
+  (to base)   _ (alt left) up (alt right) _ _ (click left) (mouse up) (click right) _ _
+  (to sys)    _ left down right (pg up) (scroll up) (mouse left) (mouse down) (mouse right) _ _
+  (to qwerty) _ _ ctrl alt (pg dn) (scroll dn) (click middle) _ _ _ ret
   meta _ shift (click left) (to base) _
 )
 
@@ -100,6 +100,14 @@ The goal of this project is to convert such user defined configurations:
   _ _ _ _ _ (bt clear) _ (bt 1) (bt 2) (bt 3) _ _
   _ _ _ _ (to base) _
   )
+
+(def-layer qwerty
+  (to base) q w e r t   y u i o p  (sl french)
+  tab       a s d f g   h j k l ;  (sl greek)
+  esc       z x c v b   n m , . /  ret
+    ctrl alt shft_bspc space (mo fn) (mo num)
+)
+
 ```
 
 … into [zmk config](https://github.com/TristanCacqueray/zmk-config/blob/main/config/gen-zmk.dtsi) and such documentation diagrams:
