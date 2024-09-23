@@ -84,6 +84,7 @@ def Config.renderZMKBinding (config : Config) : Binding -> String
       | "shift" => s!"&kp LS({ZMK.key v})"
       | "gui" => s!"&kp LG({ZMK.key v})"
       | "alt" => s!"&kp LA({ZMK.key v})"
+      | "ctrl" => s!"&kp LC({ZMK.key v})"
       | "to" => s!"&to {config.layerPos! v.toLower}"
       | "mo" => s!"&mo {config.layerPos! v.toLower}"
       | "sl" => s!"&sl {config.layerPos! v.toLower}"

@@ -111,6 +111,7 @@ def renderLayer (config : Config) (startY : Nat) (layer : Layer) : String :=
     | Binding.mac name arg => match name with
         | "shift" => render s!"⇧ {arg.toUpper}"
         | "alt" => render s!"M-{arg.toUpper}"
+        | "ctrl" => render s!"C-{arg.toUpper}"
         | "gui" => render s!"🐧 {arg.toUpper}"
         | "to" => render s!"👉 {arg.toUpper}"
         | "mo" => render s!"👇 {arg.toUpper}"

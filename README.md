@@ -34,17 +34,18 @@ The goal of this project is to convert such user defined configurations:
     meta alt shft_bspc space (mo fn) (mo num)
 )
 
+;; M-y is past from kill-ring, C-y is kill-ring, S-y is paste through mouse middle-click
 (def-layer num
-  _ ! @ up [ ] '" 7 8 9 * _
-  _ # left down right $ (pg up) 4 5 6 (kbd ":=") _
-  _ [ ] '( ') & (pg dn) 1 2 3 \ RET
-    _ _ _ _ 0 .
+  _ F20 F21   up  F22   F23  (click middle) 7 8 9 *          _
+  _ F18 left down right F19  (pg up)        4 5 6 (kbd ":=") _
+  _ F13 F14   F15 F16   F17  (pg dn)        1 2 3 \ RET
+    (to base) (to base) (to base) _ 0 .
   )
 (def-layer fn :overlay num 'top-right
   (to base) INS HOME up END (pg up)          _  F7 F8 F9 F10 _
   _ DEL left down right     (pg dn)     (pg up) F4 F5 F6 F11 _
   _ (vol dn) (vol up) (br dn) (br up) _ (pg dn) F1 F2 F3 F12 _
-  _ (to base) _ _ (to base) print-screen
+  (to base) (to base) (to base) _ (to base) print-screen
   )
 
 (def-alias SE (shift esc))
@@ -81,8 +82,8 @@ The goal of this project is to convert such user defined configurations:
 (def-label SE "🎤 push")
 
 (def-layer wm
-  __ __ __           (shift up)   __            __         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
-  (gui tab) __ (shift left) (shift down) (shift right) __  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
+  __ __ __           (ctrl up)   __            __         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
+  (gui tab) __ (ctrl left) (ctrl down) (ctrl right) __  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
   __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-x 0") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") __ __
   _ _ _ (kbd "C-SPC") (to base) __
 )
