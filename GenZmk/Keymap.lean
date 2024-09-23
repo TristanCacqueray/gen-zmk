@@ -103,17 +103,17 @@ def Config.renderZMKBinding (config : Config) : Binding -> String
           s!"&mkp {click}CLK"
       | "mouse" =>
           let dir := match v with
-            | "up"    => "MOVE_VERT(-"
-            | "left"  => "MOVE_HOR(-"
-            | "down"  => "MOVE_VERT("
-            | "right" => "MOVE_HOR("
+            | "up"    => "MOVE_Y(-"
+            | "left"  => "MOVE_X(-"
+            | "down"  => "MOVE_Y("
+            | "right" => "MOVE_X("
             | _ => "OOPS("
           s!"&mmv {dir}1250)"
       | "scroll" =>
           let dir := match v with
-            | "up" => "SCROLL_VERT("
-            | _ => "SCROLL_VERT(-"
-          s!"&mwh {dir}10)"
+            | "up" => "MOVE_Y("
+            | _ => "MOVE_Y(-"
+          s!"&msc {dir}10)"
       | "out" => "&out " ++ if v == "toggle" then "OUT_TOG" else v.toUpper
       | "bt" => match v with
           | "clear" => "&bt BT_CLR"
