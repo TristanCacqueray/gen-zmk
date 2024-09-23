@@ -3,7 +3,8 @@ open Lake DSL
 
 package «gen-zmk» where
 
-require std from git "https://github.com/leanprover/std4" @ "v4.3.0"
+require batteries from
+    git "https://github.com/leanprover-community/batteries" @ "v4.9.0"
 
 lean_lib «GenZmk» where
 

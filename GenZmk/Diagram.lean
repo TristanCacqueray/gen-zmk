@@ -2,7 +2,7 @@
 --
 
 import «GenZmk».Config
-import Std.Data.List.Basic
+import Batteries.Data.List.Basic
 
 def width := 100
 def height := 60
