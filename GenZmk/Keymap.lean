@@ -61,13 +61,17 @@ def ZMK.key : String -> String
     | [c] => ZMK.decodeChar c
     | _ => v.toUpper
 
+-- TODO: implement the full kbd string format
 def ZMK.decodeKBD : String -> (String ⊕ String)
   | "C-SPC" => Sum.inl "LC(SPACE)"
+  | "C-x t RET" => Sum.inr "&kp LC(X) &kp T &kp RET"
   | v => match v.toList with
     | ['M', '-', x] => Sum.inl s!"LA({x.toUpper.toString})"
     | ['C', '-', x] => Sum.inl s!"LC({x.toUpper.toString})"
     | ['C', '-', 'x', ' ', c] => Sum.inr s!"&kp LC(X) &kp {ZMK.decodeChar c}"
     | ['C', '-', 'c', ' ', 'p', ' ', c] => Sum.inr s!"&kp LC(C) &kp P &kp {ZMK.decodeChar c}"
+    | ['C', '-', 'x', ' ', 't', ' ', 'O'] => Sum.inr s!"&kp LC(X) &kp T &kp LS(O)"
+    | ['C', '-', 'x', ' ', 't', ' ', c] => Sum.inr s!"&kp LC(X) &kp T &kp {ZMK.decodeChar c}"
     | xs => Sum.inr (" ".intercalate ((xs.map ZMK.decodeChar).map ("&kp " ++ .)))
 
 

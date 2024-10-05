@@ -81,11 +81,17 @@ The goal of this project is to convert such user defined configurations:
 (def-label (kbd "C-x 3") "✂ vert")
 (def-label SE "🎤 push")
 
+(def-label (kbd "C-x t O") "← tab")
+(def-label (kbd "C-x t o") "→ tab")
+(def-label (kbd "C-x t 2") "new tab")
+(def-label (kbd "C-x t 0") "⌧ tab")
+(def-label (kbd "C-x t RET") "⇄ tab")
+
 (def-layer wm
-  __ __ __           (ctrl up)   __            __         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
-  (gui tab) __ (ctrl left) (ctrl down) (ctrl right) __  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
+  __ __  (kbd "C-x t O") (ctrl up) (kbd "C-x t o") (kbd "C-x t 2")         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
+  (gui tab) __ (ctrl left) (ctrl down) (ctrl right) (kbd "C-x t RET")  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
   __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-x 0") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") __ __
-  _ _ _ (kbd "C-SPC") (to base) __
+  _ (kbd "C-x t 0") _ (kbd "C-SPC") (kbd "C-x 0") __
 )
 
 (def-layer mice
