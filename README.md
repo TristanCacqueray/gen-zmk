@@ -60,8 +60,6 @@ The goal of this project is to convert such user defined configurations:
   _ ζΖ ξΞ __ ωΩ βΒ νΝ μΜ N  ℝ  ⊕  _
     __ __ shift __ (to base) __)
 
-(def-label (kbd "C-c p p") "📂 project")
-(def-label (kbd "C-c p f") "📂 proj-file")
 (def-label (gui ret) "🚀 terminal")
 (def-label (gui v) "🚀 gmrun")
 (def-label (gui F) "💻 code")
@@ -84,6 +82,9 @@ The goal of this project is to convert such user defined configurations:
 (def-label (kbd "C-c <left>") "win-undo")
 (def-label (kbd "C-c <right>") "win-redo")
 
+(def-label (kbd "C-x p p") "📂 project")
+(def-label (kbd "C-x p f") "📂 proj-file")
+
 (def-label (kbd "C-x t O") "← tab")
 (def-label (kbd "C-x t o") "→ tab")
 (def-label (kbd "C-x t 2") "new tab")
@@ -91,8 +92,8 @@ The goal of this project is to convert such user defined configurations:
 (def-label (kbd "C-x t RET") "⇄ tab")
 
 (def-layer wm
-  __ __  (kbd "C-x t O") (ctrl up) (kbd "C-x t o") (kbd "C-x t 2")         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
-  (gui tab) __ (ctrl left) (ctrl down) (ctrl right) (kbd "C-x t RET")  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
+  __ __  (kbd "C-x t O") (ctrl up) (kbd "C-x t o") (kbd "C-x t 2")         (gui v)   (gui J) (gui K) (gui L) (kbd "C-x p p") __
+  (gui tab) __ (ctrl left) (ctrl down) (ctrl right) (kbd "C-x t RET")  (gui ret) (gui F) (gui G) (gui H) (kbd "C-x p f") __
   __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-c <left>") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") (kbd "C-c <right>") __
   _ (kbd "C-x t 0") _ (kbd "C-SPC") (kbd "C-x 0") __
 )
