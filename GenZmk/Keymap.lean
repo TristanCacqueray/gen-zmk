@@ -65,6 +65,8 @@ def ZMK.key : String -> String
 def ZMK.decodeKBD : String -> (String ⊕ String)
   | "C-SPC" => Sum.inl "LC(SPACE)"
   | "C-x t RET" => Sum.inr "&kp LC(X) &kp T &kp RET"
+  | "C-c <left>" => Sum.inr "&kp LC(C) &kp LEFT"
+  | "C-c <right>" => Sum.inr "&kp LC(C) &kp RIGHT"
   | v => match v.toList with
     | ['M', '-', x] => Sum.inl s!"LA({x.toUpper.toString})"
     | ['C', '-', x] => Sum.inl s!"LC({x.toUpper.toString})"

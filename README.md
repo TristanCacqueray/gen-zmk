@@ -74,12 +74,15 @@ The goal of this project is to convert such user defined configurations:
 (def-label (gui K) "💻 8")
 (def-label (gui L) "💻 9")
 (def-label (gui tab) "⇄ win")
+(def-label SE "🎤 push")
+
 (def-label (kbd "C-x b") "⇄ buffer")
 (def-label (kbd "C-x 0") "⌧ win")
 (def-label (kbd "C-x 1") "⌧ other-win")
 (def-label (kbd "C-x 2") "✂ horiz")
 (def-label (kbd "C-x 3") "✂ vert")
-(def-label SE "🎤 push")
+(def-label (kbd "C-c <left>") "win-undo")
+(def-label (kbd "C-c <right>") "win-redo")
 
 (def-label (kbd "C-x t O") "← tab")
 (def-label (kbd "C-x t o") "→ tab")
@@ -90,7 +93,7 @@ The goal of this project is to convert such user defined configurations:
 (def-layer wm
   __ __  (kbd "C-x t O") (ctrl up) (kbd "C-x t o") (kbd "C-x t 2")         (gui v)   (gui J) (gui K) (gui L) (kbd "C-c p p") __
   (gui tab) __ (ctrl left) (ctrl down) (ctrl right) (kbd "C-x t RET")  (gui ret) (gui F) (gui G) (gui H) (kbd "C-c p f") __
-  __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-x 0") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") __ __
+  __ __ (gui A)      (gui S)      (gui D)      (kbd "C-x b") (kbd "C-c <left>") (kbd "C-x 1") (kbd "C-x 2") (kbd "C-x 3") (kbd "C-c <right>") __
   _ (kbd "C-x t 0") _ (kbd "C-SPC") (kbd "C-x 0") __
 )
 

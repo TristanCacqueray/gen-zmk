@@ -34,11 +34,14 @@ def svg (dim : (Nat × Nat)) (child : String) : String :=
   sp := ("xml:space", "preserve")
   ns := ("xmlns", "http://www.w3.org/2000/svg")
 
+def replaceHTMLEntities (s : String) : String :=
+  String.replace (String.replace s "<" "&lt;") ">" "&gt;"
+
 def rectTitle (title : Option String) (fill : String) (dim : (Nat × Nat)) (pos : (Nat × Nat)) : String :=
   mkElem "rect" [("style", style), ("width", dim.fst.repr), ("height", dim.snd.repr),
                  ("x", pos.fst.repr), ("y", pos.snd.repr)] (titlem.getD "")
  where
-  titlem := ("<title>" ++ . ++ "</title>") <$> title
+  titlem := ("<title>" ++ replaceHTMLEntities . ++ "</title>") <$> title
   style := s!"fill:{fill}" ++ if fill != comboColor then ";stroke:#c3c3c3" else ""
 
 def rect := rectTitle none
