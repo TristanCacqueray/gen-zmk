@@ -394,12 +394,20 @@ where
     | head :: rest => (head ++ " = SAFE_RANGE") :: rest
     | r => r
 
+def QMK.renderLayerOled (layers : List Layer) : String :=
+  "#define LAYER_HANDLERS \\\n  " ++
+  " \\\n  ".intercalate handlers
+where
+  mkHandler l := "case " ++ QMK.layerName l ++ s!": oled_write_P(PSTR(\"{l.name}\\n\"), false); break;"
+  handlers := layers.map mkHandler
+
 def Config.renderQMK (config : Config) : String :=
   "// Generated with https://github.com/TristanCacqueray/gen-zmk/\n\n" ++
   String.intercalate "\n\n" (["#pragma once",
+    QMK.renderLayerEnum config.layers.reverse,
+    QMK.renderLayerOled config.layers.reverse,
     QMK.renderCustomKeycodes config,
     QMK.renderCombos config.layers.head? config.combos,
-    QMK.renderLayerEnum config.layers.reverse,
     QMK.renderKeymaps config.layers.reverse])
 
 #eval Config.renderQMK <$> Config.demo
