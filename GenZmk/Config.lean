@@ -363,4 +363,8 @@ def Config.readme : IO Config := do
      IO.println s!"error: {err}"
      pure Config.default
 
-#eval Config.readme
+-- #eval Config.readme
+
+def Config.loadFile (fp : String) := do
+  let body <- IO.FS.readFile fp
+  pure (Config.decode =<< Parser.Sexpr.parse body)

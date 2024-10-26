@@ -12,3 +12,7 @@ lean_lib «GenZmk» where
 lean_exe «demo» {
   root := `Demo
 }
+
+lean_exe «qmk» {
+  root := `Qmk
+}

@@ -1,10 +1,5 @@
-# gen-zmk - generate keyboard config and diagrams
-
-## Overview and scope
-
-The goal of this project is to convert such user defined configurations:
-
-```
+;; The moonpointer config
+;;
 (def-cfg
   ;; os sets the unicode sequence code
   :os 'linux
@@ -99,9 +94,9 @@ The goal of this project is to convert such user defined configurations:
 )
 
 (def-layer mice
-  (to base)   _ (alt left) up (alt right) _ _ (click left) (mouse up) (click right) _ _
-  (to sys)    _ left down right (pg up) (scroll up) (mouse left) (mouse down) (mouse right) _ _
-  (to qwerty) _ _ ctrl alt (pg dn) (scroll dn) (click middle) _ _ _ ret
+  (to base)   _ (alt left) up (alt right) _ (scroll up) (click right) (click middle) _ _ _
+  (to sys)    _ left down right (pg up)     (scroll dn) (scroll left) (scroll right) _ _ _
+  (to qwerty) _ _ ctrl alt (pg dn)          _ _ _ _ _ ret
   meta _ shift (click left) (to base) _
 )
 
@@ -118,29 +113,3 @@ The goal of this project is to convert such user defined configurations:
   esc       z x c v b   n m , . /  ret
     ctrl alt shft_bspc space (mo fn) (mo num)
 )
-
-```
-
-… into [zmk config](https://github.com/TristanCacqueray/zmk-config/blob/main/config/gen-zmk.dtsi), [qmk_config](https://github.com/TristanCacqueray/qmk-config/blob/main/gen_qmk.h) and such documentation diagrams:
-
-![diagrams](https://raw.githubusercontent.com/TristanCacqueray/zmk-config/main/moonwalker.svg)
-
-
-## Features
-
-- [x] Unicode sequence
-- [x] Keyboard macro using emacs (kbd) syntax
-- [x] Layer IDs
-- [x] QMK keymap.h
-- [ ] Macro description (e.g. shift-esc is mumble push-to-talk)
-- [ ] KMonad
-- [ ] bilateral tap-hold config
-
-
-# Contribute
-
-Update demo with:
-
-```ShellSession
-watchexec --ignore "*.svg" --ignore "*.keymap" lake exe demo
-```

@@ -188,8 +188,8 @@ def renderDiagram (config : Config) : String :=
   svgDim := (boardDim.fst * (width + kpad) + hpad + 2 * kpad,
              titleHeight + drawnLayers.length * (boardDim.snd * (height + kpad) + bpad) + 2 * kpad)
   -- todo: load from config
-  title := text 23 none "end" (svgDim.fst / 2, 20) "Moonwalker"
-  url := text 23 none "start" (svgDim.fst / 2 - 15, 20) "TristanCacqueray/zmk-config"
+  title := text 23 none "end" (svgDim.fst / 2, 20) "MoonPointer"
+  url := text 23 none "start" (svgDim.fst / 2 - 15, 20) "TristanCacqueray/qmk-config"
 
   drawCombos := fun combos =>
     let layer := combos.layers.head!

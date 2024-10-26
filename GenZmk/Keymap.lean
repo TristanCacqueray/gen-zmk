@@ -61,6 +61,39 @@ def ZMK.key : String -> String
     | [c] => ZMK.decodeChar c
     | _ => v.toUpper
 
+def QMK.decodeChar : Char -> String
+  | ',' => "COMMA"
+  | '.' => "DOT"
+  | '/' => "SLASH"
+  | '-' => "MINUS"
+  | '_' => "UNDERSCORE"
+  | ':' => "COLON"
+  | ';' => "SEMICOLON"
+  | '=' => "EQUAL"
+  | '!' => "EXCLAIM"
+  | '@' => "AT"
+  | '[' => "LEFT_BRACKET"
+  | ']' => "RIGHT_BRACKET"
+  | '*' => "ASTERISK"
+  | '#' => "HASH"
+  | '$' => "DOLLAR"
+  | '&' => "AMPERSAND"
+  | '\\' => "BACKSLASH"
+  | '{' => "LEFT_CURLY_BRACE"
+  | '}' => "RIGHT_CURLY_BRACE"
+  | '~' => "TILDE"
+  | '%' => "PERCENT"
+  | '+' => "PLUS"
+  | '\'' => "QUOTE"
+  | '"' => "DOUBLE_QUOTE" -- "
+  | '(' => "LEFT_PAREN"
+  | ')' => "RIGHT_PAREN"
+  | '^' => "CIRCUMFLEX"
+  | '`' => "GRAVE"
+  | '|' => "PIPE"
+  | c => if c >= '0' && c <= '9' then s!"{c}" else c.toString.toUpper
+
+
 -- TODO: implement the full kbd string format
 def ZMK.decodeKBD : String -> (String ⊕ String)
   | "C-SPC" => Sum.inl "LC(SPACE)"
@@ -75,7 +108,17 @@ def ZMK.decodeKBD : String -> (String ⊕ String)
     | ['C', '-', 'x', ' ', 't', ' ', 'O'] => Sum.inr s!"&kp LC(X) &kp T &kp LS(O)"
     | ['C', '-', 'x', ' ', 't', ' ', c] => Sum.inr s!"&kp LC(X) &kp T &kp {ZMK.decodeChar c}"
     | xs => Sum.inr (" ".intercalate ((xs.map ZMK.decodeChar).map ("&kp " ++ .)))
-
+def QMK.decodeKBD : String -> String
+  | "C-SPC" => "SS_LCTL(\" \")"
+  | "C-x t RET" => "SS_LCTL(\"x\") \"t\\n\""
+  | "C-c <left>" => "SS_LCTL(\"c\") SS_TAP(X_LEFT)"
+  | "C-c <right>" => "SS_LCTL(\"c\") SS_TAP(X_RIGHT)"
+  | v => match v.toList with
+    | ['M', '-', x] => s!"SS_LALT(\"{x.toString}\")"
+    | ['C', '-', x] => s!"SS_LCTL(\"{x.toString}\")"
+    | ['C', '-', 'x', ' ', c] => s!"SS_LCTL(\"x\") \"{c.toString}\""
+    | ['C', '-', 'x', ' ', p, ' ', c] => s!"SS_LCTL(\"x\") \"{p.toString}{c.toString}\""
+    | xs => s!"\"{v}\""
 
 def Config.renderZMKBinding (config : Config) : Binding -> String
   | Binding.key v => "&kp " ++ ZMK.key v
@@ -195,11 +238,168 @@ def ZMK.renderCombos (config : Config) (layerCombos : LayerCombos) :=
  where
   layers := " ".intercalate ((layerCombos.layers.filterMap config.layerPos).map (fun n => s!"{n}"))
 
-def Config.renderKeymap (config : Config) : String :=
+
+def Config.renderZMK (config : Config) : String :=
   String.intercalate "\n" (combos ++ macros ++ config.layers.reverse.map config.renderZMKLayer ++ [""])
 where
   macs := (List.join $ config.layers.map (Layer.bindings)).filterMap ZMK.renderMacro
   macros := macs.eraseDups
   combos := config.combos.map (ZMK.renderCombos config)
 
-#eval Config.renderKeymap <$> Config.demo
+def QMK.key : String -> String
+  | "alt" => "LALT"
+  | "ctrl" => "LEFT_CTRL"
+  | "shift" => "LEFT_SHIFT"
+  | "meta" => "LGUI"
+  | "ret" => "ENTER"
+  | "bspc" => "BACKSPACE"
+  | "RET" => "ENTER"
+  | "print-screen" => "PRINT_SCREEN"
+  | "'\"" => "DOUBLE_QUOTE"
+  | v => match v.toList with
+    | [c] => QMK.decodeChar c
+    | _ => v.toUpper
+
+def QMK.layerNameStr (name : String) : String := s!"_layer_{name}"
+def QMK.layerName (layer : Layer) : String := QMK.layerNameStr layer.name
+def QMK.modName (k : String) : String := match k with
+  | "ctrl" => "LCTL"
+  | "shift" => "LSFT"
+  | "alt" => "LALT"
+  | _ => "Unknown mod " ++ k
+def QMK.customUnicodeName : (Char ⊕ (Char × Char)) -> String
+    | Sum.inl c => "M_" ++ mkHexID c.toString
+    | Sum.inr (c, s) => "M_" ++ mkHexID c.toString ++ mkHexID s.toString
+def QMK.customKbdName (val : String) : String := s!"M_{mkHexID val}"
+
+def QMK.renderBinding : Binding -> String
+  | Binding.key v => "KC_" ++ QMK.key v
+  | Binding.unicode val => QMK.customUnicodeName val
+  | Binding.na => "XXXXXXX"
+  | Binding.hold'tap name (Binding.key hold) (Binding.key tap) =>
+      match name with
+       | "mt_repeat" => s!"MT(MOD_{QMK.modName hold}, KC_{QMK.key tap})"
+       | "hll" => s!"LT({QMK.layerNameStr hold}, KC_{QMK.key tap})"
+       | "hlr" => s!"LT({QMK.layerNameStr hold}, KC_{QMK.key tap})"
+       | "hhr" => s!"LT({QMK.layerNameStr hold}, KC_{QMK.key tap})"
+       | "hml" => s!"MT(MOD_{QMK.modName hold}, KC_{QMK.key tap})"
+       | "hmr" => s!"MT(MOD_{QMK.modName hold}, KC_{QMK.key tap})"
+       | _ => "XXXXXXX"
+  | Binding.mac name v => match name with
+     | "shift" => s!"LSFT(KC_{QMK.key v})"
+     | "gui" => s!"LGUI(KC_{QMK.key v})"
+     | "alt" => s!"LALT(KC_{QMK.key v})"
+     | "ctrl" => s!"LCTL(KC_{ZMK.key v})"
+     | "to" => s!"TO({QMK.layerNameStr v})"
+     | "mo" => s!"MO({QMK.layerNameStr v})"
+     | "sl" => s!"OSL({QMK.layerNameStr v})"
+     | "pg" => s!"KC_PG{v.toUpper}"
+     | "vol" => match v with
+       | "up" => "KC_AUDIO_VOL_UP"
+       | _ => "KC_AUDIO_VOL_DOWN"
+     | "br" => match v with
+       | "up" => "KC_BRIGHTNESS_UP"
+       | _ => "KC_BRIGHTNESS_DOWN"
+     | "click" =>
+          let click := match v with
+            | "left" => "1"
+            | "right" => "2"
+            | _ => "3"
+          s!"KC_MS_BTN{click}"
+     | "scroll" =>
+          let dir := match v with
+            | "up" => "UP"
+            | "left" => "LEFT"
+            | "right" => "RIGHT"
+            | _ => "DOWN"
+          s!"KC_MS_WH_{dir}"
+     | "kbd" => QMK.customKbdName v
+     | _ => "XXXXXXX"
+  | _ => "XXXXXXX"
+
+def QMK.layerMap (layer : Layer) : String := s!"[{QMK.layerName layer}] = LAYOUT_split_3x6_3(\n" ++
+  "    " ++ (",\n    ".intercalate (layer.bindings.map QMK.renderBinding)) ++
+  ")"
+
+def QMK.renderLayerEnum (layers : List Layer) : String :=
+  "\n".intercalate (["enum layer {", " " ++ ", ".intercalate (layers.map QMK.layerName), "};"])
+
+def QMK.renderKeymaps (layers : List Layer) : String :=
+  "\n".intercalate (["const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {",
+                     "  " ++ ",\n  ".intercalate (layers.map QMK.layerMap),
+                     "};"
+  ])
+
+def QMK.comboName (combo : Combo) : String := s!"combo_{QMK.renderBinding combo.binding}"
+
+def QMK.renderComboMem (base : Layer) (combos : LayerCombos) : String :=
+  "\n".intercalate (combos.combos.map renderCombo)
+where
+  renderKey pos := match base.bindings.get? pos with
+    | some b => QMK.renderBinding b
+    | none => "OOOPS"
+  renderCombo combo :=
+    let keys := ", ".intercalate (combo.keys.map renderKey)
+    "const uint16_t PROGMEM " ++ QMK.comboName combo ++ "[] = {" ++ keys ++ ", COMBO_END};"
+
+def QMK.renderComboMap (combos : LayerCombos) : String :=
+  ",\n  ".intercalate (combos.combos.map renderCombo)
+where
+  renderCombo combo := "COMBO(" ++ QMK.comboName combo ++ ", " ++ QMK.renderBinding combo.binding ++ ")"
+
+def QMK.renderComboTerm (acc : List String) (pos : Nat) (combos : List LayerCombos) : List String :=
+  match combos with
+   | [] => acc.reverse
+   | combo :: rest =>
+      let count := combo.combos.length
+      let term := s!"  if (index < {pos + count}) return {combo.speed};"
+      QMK.renderComboTerm (term :: acc) (pos + count) rest
+
+def QMK.renderCombos (base : Option Layer) (combos : List LayerCombos) : String :=
+  match base with
+    | some layer => "\n".intercalate [
+           "\n".intercalate (combos.map (QMK.renderComboMem layer)),
+           "\ncombo_t key_combos[] = {\n  " ++
+           ",\n  ".intercalate (combos.map QMK.renderComboMap) ++
+           "\n};",
+           "uint16_t get_combo_term(uint16_t index, combo_t *combo) {\n" ++
+           "\n".intercalate (QMK.renderComboTerm [] 0 combos) ++
+           "\n  return 40;" ++
+           "\n}"
+      ]
+    | none => "#error \"Can't find base layer\""
+
+def QMK.customKeycode : Binding -> Option (Binding × String)
+  | b@(Binding.unicode val) => some (b, QMK.customUnicodeName val)
+  | b@(Binding.mac "kbd" val) => some (b, QMK.customKbdName val)
+  | _ => none
+
+def QMK.renderCustomKeycodes (config : Config) : String :=
+  "enum custom_keycodes {\n  " ++
+  ",\n  ".intercalate keycodes ++
+  ",\n};\n#define MACRO_HANDLERS \\\n  " ++
+  " \\\n  ".intercalate handlers
+where
+  codes := (List.join $ config.layers.map (Layer.bindings)).filterMap QMK.customKeycode
+  mkAction b := match b with
+   | Binding.unicode val => match val with
+     | Sum.inl c => s!"send_unicode_string(\"{c}\")"
+     | Sum.inr (c, s) => s!"send_unicode_string(is_shifted ? \"{s}\" : \"{c}\")"
+   | Binding.mac "kbd" val => s!"SEND_STRING({QMK.decodeKBD val})"
+   | _ => "TODO!"
+  mkHandler b := "case " ++ b.2 ++ ": " ++ mkAction b.1 ++ "; break;"
+
+  handlers := codes.eraseDups.map mkHandler
+  keycodes := match codes.eraseDups.map Prod.snd with
+    | head :: rest => (head ++ " = SAFE_RANGE") :: rest
+    | r => r
+
+def Config.renderQMK (config : Config) : String :=
+  "// Generated with https://github.com/TristanCacqueray/gen-zmk/\n\n" ++
+  String.intercalate "\n\n" (["#pragma once",
+    QMK.renderCustomKeycodes config,
+    QMK.renderCombos config.layers.head? config.combos,
+    QMK.renderLayerEnum config.layers.reverse,
+    QMK.renderKeymaps config.layers.reverse])
+
+#eval Config.renderQMK <$> Config.demo
