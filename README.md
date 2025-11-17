@@ -50,7 +50,7 @@ The goal of this project is to convert such user defined configurations:
 
 (def-alias SE (shift esc))
 (def-layer french :overlay base 'top-right
-  _ __ èÉ éÉ êÊ __ __ ùÙ îÎ œŒ SE _
+  _ __ èÈ éÉ êÊ __ __ ùÙ îÎ œŒ SE _
   _ àÀ âÂ ëË __ €  __ üÜ ïÏ ôÔ …  _
   _ __ __ çÇ __ __ __ __ «  »  __ _
     __ __ shift __ (to base) __)
